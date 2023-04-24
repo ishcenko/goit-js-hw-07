@@ -1,66 +1,50 @@
-import { galleryItems } from './gallery-items.js';
-// Change code below this line
+import { galleryItems } from "./gallery-items.js";
 
-// console.log(galleryItems);
-const galleryLicstAll = document.querySelector('.gallery');
+const galleryLicstAll = document.querySelector(".gallery");
+createGallery(galleryItems);
 
-function createGalleryImg(galleryItems) {
-    return galleryItems.map(({ preview, original, description }) => {
-        return `
-        <li class="gallery__item">
-        <a class="gallery__link" href="${original}">
+let bigImageModalWindow;
+
+galleryLicstAll.addEventListener("click", showModal);
+
+function createGallery(galleryData) {
+  galleryLicstAll.innerHTML = galleryData
+    .map(
+      (galleryItem) => `
+    <li class="gallery__item">
+  <a class="gallery__link" href="${galleryItem.original}">
     <img
-        class="gallery__image"
-        src="${preview}"
-        data-source="${original}"
-        alt="${description}"/>
-        </a>
-    </li>`
-    }).join('');
-};
+      class="gallery__image"
+      src="${galleryItem.preview}"
+      data-source="${galleryItem.original}"
+      alt="${galleryItem.description}"
+    />
+  </a>
+</li>`
+    )
+    .join("");
+}
 
-const galleryListItemsAll = createGalleryImg(galleryItems);
-galleryLicstAll.insertAdjacentHTML('beforeend', galleryListItemsAll);
-galleryListItemsAll.addEventListener('click', galleryImgClick);
-
-let imgList;
-
-function galleryImgClick(e) {
-    const { target } = e;
-    e.preventDefauit();
-
-    if (target.nodeName !== 'IMG') {
-        return
+function showModal(event) {
+  if (!event.target.classList.contains("gallery__image")) {
+    return;
     };
 
-    const imgSours = target.dataset.source;
+  event.preventDefault();
 
-    imgList = basicLightbox.create(`
-    <img src='${imgSours}'>`, {
-        onShow: (imgList) => {
-            imgList.element().querySelector('img').addEventListener('click, closeModal');
-            document.addEventListener('keydown, offImgClose');
-        },
-        onclose: (imgList) => {
-            imgList.element().querySelector('img').removeEventListener('click, closeModal');
-            document.removeEventListener('keydown, offImgClose');
-        }
-    });
+  bigImageModalWindow = basicLightbox.create(`
+      <img src="${event.target.dataset.source}" width="800" height="600">
+  `);
 
-    imgList.show();
+  bigImageModalWindow.show();
 
+  window.addEventListener("keydown", closeModal);
+};
 
-    function closeModal() {
-        imgList.close();
+function closeModal(event) {
+  console.log(event);
+  if (event.code === "Escape") {
+    bigImageModalWindow.close();
+    window.removeEventListener("keydown", closeModal);
     };
-
 };
-function offImgClose(e) {
-    if (e.code !== 'Escape') {
-        return;
-
-    }
-    imgList.close();
-};
-
-
