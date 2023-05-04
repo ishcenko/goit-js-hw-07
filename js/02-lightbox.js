@@ -12,7 +12,7 @@ function createGalleryItem(galleryItems) {
  </li>
  `
     }).join('');
-}
+};
 
 const galleryMarkup = createGalleryItem(galleryItems);
 
@@ -23,7 +23,7 @@ galleryList.addEventListener('click', onGaleryItemsClick);
 
 function onGaleryItemsClick(e) {
     e.preventDefault()
-}
+};
 
 const gallery = new SimpleLightbox('.gallery__item > .gallery__link', {
     captions: true,
